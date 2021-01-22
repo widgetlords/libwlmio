@@ -1,0 +1,8 @@
+Package: libwlmio
+Version: 1.0.0-1
+Section: base
+Priority: optional
+Architecture: armhf
+Depends: python3
+Maintainer: Kelsey Maes <kelsey@vpprocess.com>
+Description: Support for the Widgetlord WL-MIO system

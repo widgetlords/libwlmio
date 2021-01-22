@@ -1,0 +1,111 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2711";
+
+	fragment@0 {
+		target = <&spi0>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+	
+	fragment@1 {
+		target = <&spidev0>;
+		__overlay__ {
+			status = "disabled";
+		};
+	};
+	
+	fragment@2 {
+		target = <&gpio>;
+		__overlay__ {
+			can_pins: can_spi0_0_pins {
+				brcm,pins = <6 16>;
+				brcm,function = <0 0>; // GPIO INPUT
+				brcm,pull = <2 2>; // PULL-UP
+			};
+		};
+	};
+	
+	fragment@3 {
+		target-path = "/clocks";
+		__overlay__ {
+			can_osc: can_spi0_0_osc {
+				#clock-cells = <0>;
+				compatible = "fixed-clock";
+				clock-frequency = <40000000>;
+			};
+		};
+	};
+
+	fragment@4 {
+		target = <&spi0>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			can: mcp2518fd@0 {
+				compatible = "microchip,mcp2518fd";
+				reg = <0>;
+				pinctrl-names = "default";
+				pinctrl-0 = <&can_pins>;
+				spi-max-frequency = <20000000>;
+				interrupt-parent = <&gpio>;
+				interrupts = <6 8>; // IRQ_TYPE_LEVEL_LOW
+				// interrupts-extended = <&gpio 6 8>; // IRQ_TYPE_LEVEL_LOW
+				clocks = <&can_osc>;
+				microchip,rx-int-gpios = <&gpio 16 1>; // GPIO_ACTIVE_LOW
+			};
+
+		};
+	};
+
+	fragment@5 {
+		target = <&i2c_arm>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+
+			mcp7941x: mcp7941x@6f {
+				compatible = "microchip,mcp7941x";
+				reg = <0x6f>;
+				status = "okay";
+			};
+		};
+	};
+
+	fragment@6 {
+		target = <&uart3>;
+		__overlay__ {
+			pinctrl-names = "default";
+			pinctrl-0 = <&uart3_pins>;
+			status = "okay";
+		};
+	};
+
+	fragment@7 {
+		target = <&uart5>;
+		__overlay__ {
+			pinctrl-names = "default";
+			pinctrl-0 = <&uart5_pins>;
+			status = "okay";
+		};
+	};
+
+	fragment@8 {
+		target = <&gpio>;
+		__overlay__ {
+			pinctrl-names = "default";
+			pinctrl-0 = <&uavcan_address>;
+			
+			uavcan_address: uavcan_address {
+				brcm,pins = <21 22 23 24 25 26 27>;
+				brcm,function = <0 0 0 0 0 0 0>; // GPIO INPUT
+				brcm,pull = <2 2 2 2 2 2 2>; // PULL-UP
+			};
+		};
+	};
+};

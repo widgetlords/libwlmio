@@ -1,0 +1,2 @@
+cp /usr/share/rpikernelhack/overlays/wlmio.dtbo /boot/overlays/
+rm -rf /usr/share/rpikernelhack/

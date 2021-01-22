@@ -1,0 +1,5 @@
+if test "$1" = remove -a "$1" = abort-install -a "$1" = disappear;
+then
+  dpkg-divert --no-rename --remove --package rpikernelhack /boot/overlays/wlmio.dtbo
+  rm /boot/overlays/wlmio.dtbo
+fi
