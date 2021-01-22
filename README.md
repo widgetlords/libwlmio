@@ -5,6 +5,7 @@ A C and Python library for use with the Widgetlords [WL-MIO](https://wlmio.com/)
 ## Examples
 
 https://wlmio.com/applications.html
+https://github.com/widgetlords/wlmio_examples
 
 ## Dependencies
 
