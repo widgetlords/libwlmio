@@ -11,26 +11,34 @@ __all__ = []
 
 Status = namedtuple("Status", ["uptime", "health", "mode", "vendor_status"])
 
-status_callbacks = [set() for i in range(128)]
+status_callbacks = [set() for i in range(129)]
 
 def register_status_callback(id: int, callback: Callable) -> None:
-  assert id >= 0 and id < 128
+  assert id is None or (id >= 0 and id < 128)
   assert asyncio.iscoroutinefunction(callback)
-  status_callbacks[id].add(callback)
+  if id is None:
+    status_callbacks[128].add(callback)
+  else:
+    status_callbacks[id].add(callback)
 __all__.append("register_status_callback")
 
 def unregister_status_callback(id: int, callback: Callable) -> None:
-  assert id >= 0 and id < 128
-  if callable in status_callbacks[id]:
+  assert id is None or (id >= 0 and id < 128)
+  if id is None:
+    status_callbacks[128].discard(callback)
+  else:
     status_callbacks[id].discard(callback)
 __all__.append("unregister_status_callback")
 
 def status_callback(node_id: int, old_status: bytes, new_status: bytes) -> None:
   old_status = Status._make(unpack("IBBB0L", old_status))
   new_status = Status._make(unpack("IBBB0L", new_status))
-  
+
   for callback in status_callbacks[node_id]:
     asyncio.create_task(callback(old_status, new_status))
+
+  for callback in status_callbacks[128]:
+    asyncio.create_task(callback(node_id, old_status, new_status))
 
 set_status_callback(status_callback)
 
@@ -164,7 +172,7 @@ class Node:
     elif reg_type == RegisterType.UINT8:
       length = len(value)
       data = pack("{0}B".format(length), *value)
-    
+
     regw = s.pack(reg_type, length, data)
     regr = await register_access(self.id, name, regw, loop.create_future())
     if regr[0] < 0:
@@ -190,7 +198,7 @@ class Node:
         break
 
       names.append(r[1])
-    
+
     return names
 
 
