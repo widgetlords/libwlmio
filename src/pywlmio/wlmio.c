@@ -86,7 +86,7 @@ static PyObject* pywlmio_set_status_callback(PyObject* const self, PyObject* con
 {
   PyObject* result = NULL;
 
-  if(!PyCallable_Check(arg)) 
+  if(!PyCallable_Check(arg))
   {
     PyErr_SetString(PyExc_TypeError, "Argument must be callable");
     goto exit;
@@ -97,8 +97,8 @@ static PyObject* pywlmio_set_status_callback(PyObject* const self, PyObject* con
 
   Py_INCREF(Py_None);
   result = Py_None;
-  
-exit:  
+
+exit:
   return result;
 }
 
@@ -107,7 +107,7 @@ static void status_callback(const uint8_t node_id, const struct wlmio_status* co
 {
   if(!PyCallable_Check(pywlmio_status_callback))
   { return; }
-  
+
   PyObject* args = Py_BuildValue(
     "B,y#,y#",
     node_id,
@@ -159,7 +159,7 @@ static PyObject* get_node_info(PyObject* const self, PyObject* const args)
   int32_t r = PyArg_ParseTuple(args, "BO", &node_id, &future);
   if(r == 0)
   { goto exit; }
-  // if(!PyCallable_Check(callback)) 
+  // if(!PyCallable_Check(callback))
   // {
   //   PyErr_SetString(PyExc_TypeError, "Argument must be callable");
   //   goto exit;
@@ -168,7 +168,7 @@ static PyObject* get_node_info(PyObject* const self, PyObject* const args)
   struct get_node_info_param* const param = malloc(sizeof(struct get_node_info_param));
   param->future = future;
   r = wlmio_get_node_info(node_id, &param->node_info, get_node_info_callback, param);
-  if(r < 0) 
+  if(r < 0)
   {
     PyErr_SetString(PyExc_SystemError, "get_node_info error");
     free(param);
@@ -237,7 +237,7 @@ static PyObject* register_access(PyObject* const self, PyObject* const args)
     // Py_INCREF(result);
     goto exit;
   }
-  // if(!PyCallable_Check(callback)) 
+  // if(!PyCallable_Check(callback))
   // {
   //   PyErr_SetString(PyExc_TypeError, "Argument must be callable");
   //   goto exit;
@@ -246,7 +246,7 @@ static PyObject* register_access(PyObject* const self, PyObject* const args)
   struct register_access_param* const param = malloc(sizeof(struct register_access_param));
   param->future = future;
   r = wlmio_register_access(node_id, name, regw, &param->regr, register_access_callback, param);
-  if(r < 0) 
+  if(r < 0)
   {
     PyErr_SetString(PyExc_SystemError, "register_access error");
     free(param);
@@ -305,7 +305,7 @@ static PyObject* register_list(PyObject* const self, PyObject* const args)
   struct register_list_param* const param = malloc(sizeof(struct register_list_param));
   param->future = future;
   r = wlmio_register_list(node_id, index, param->name, register_list_callback, param);
-  if(r < 0) 
+  if(r < 0)
   {
     PyErr_SetString(PyExc_SystemError, "register_access error");
     free(param);
@@ -321,7 +321,60 @@ exit:
 }
 
 
-static PyMethodDef wlmio_methods[] = 
+static void execute_command_callback(const int32_t r, void* const p)
+{
+  PyObject* const future = p;
+
+  PyObject* value;
+
+  if(r < 0)
+  {
+    value = Py_None;
+    Py_INCREF(value);
+  }
+  else
+  { value = PyLong_FromLong(r); }
+
+  call_soon(future, value);
+  Py_DECREF(value);
+
+  Py_DECREF(future);
+}
+
+
+static PyObject* execute_command(PyObject* const self, PyObject* const args)
+{
+  PyObject* result = NULL;
+
+  uint8_t node_id;
+  uint16_t command;
+  const void* param;
+  size_t param_len;
+  PyObject* future;
+
+  int32_t r = PyArg_ParseTuple(args, "BHy#O", &node_id, &command, &param, &param_len, &future);
+  if(r == 0)
+  { goto exit; }
+
+  r = wlmio_execute_command(node_id, command, param, param_len, execute_command_callback, future);
+  if(r < 0)
+  {
+    PyErr_SetString(PyExc_SystemError, "execute_command error");
+    goto exit;
+  }
+
+  // one reference since it is passed to execute_command_callback
+  // another reference since we are returning the passed in future
+  Py_INCREF(future);
+  Py_INCREF(future);
+  result = future;
+
+exit:
+  return result;
+}
+
+
+static PyMethodDef wlmio_methods[] =
 {
   {"tick", tick, METH_NOARGS, NULL},
   {"wait_for_event", pywlmio_wait_for_event, METH_NOARGS, NULL},
@@ -331,6 +384,7 @@ static PyMethodDef wlmio_methods[] =
   {"get_epoll_fd", get_epoll_fd, METH_NOARGS, NULL},
   {"register_access", register_access, METH_VARARGS, NULL},
   {"register_list", register_list, METH_VARARGS, NULL},
+  {"execute_command", execute_command, METH_VARARGS, NULL},
   {NULL, NULL, 0, NULL}
 };
 

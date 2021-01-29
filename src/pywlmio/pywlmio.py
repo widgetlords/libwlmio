@@ -202,6 +202,15 @@ class Node:
     return names
 
 
+  async def reboot(self, delay=None):
+    future = asyncio.get_running_loop().create_future()
+
+    if delay is None:
+      return await execute_command(self.id, 65535, bytes(), future)
+    else:
+      return await execute_command(self.id, 65535, pack("H", delay), future)
+
+
 class IoChannel:
   def __init__(self, node: Node, name: str):
     self.node = node
