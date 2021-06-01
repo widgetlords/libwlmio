@@ -171,6 +171,18 @@ void print_register(const struct wlmio_register_access* const reg)
 			{ printf(", "); }
 		}
 	}
+  else if(reg->type == WLMIO_REGISTER_VALUE_FLOAT32)
+  {
+    float float32[64];
+    memcpy(float32, reg->value, reg->length * 4);
+
+    for(uint32_t i = 0; i < reg->length; i += 1)
+    {
+      printf("%f", float32[i]);
+      if(i < reg->length - 1)
+      { printf(", "); }
+    }
+  }
 
 	printf(" ]\n");
 }
