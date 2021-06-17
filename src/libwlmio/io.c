@@ -801,3 +801,132 @@ int32_t wlmio_node_set_sample_interval(const uint8_t node_id, const uint16_t sam
 exit:
 	return r;
 }
+
+
+struct vpe6090_read
+{
+  struct wlmio_register_access reg;
+  uint16_t* input;
+  void (* callback)(int32_t r, void* uparam);
+  void* uparam;
+};
+
+
+static void vpe6090_read_callback(int32_t r, void* const p)
+{
+  struct vpe6090_read* const t = p;
+
+  if(r < 0)
+  { goto exit; }
+
+  if(t->reg.type != WLMIO_REGISTER_VALUE_UINT16 || t->reg.length < 1)
+  {
+    r = -EPROTO;
+    goto exit;
+  }
+
+  memcpy(t->input, t->reg.value, 2);
+
+  r = 0;
+
+exit:
+  t->callback(r, t->uparam);
+  free(p);
+}
+
+
+int32_t wlmio_vpe6090_read(const uint8_t node_id, const uint8_t ch, uint16_t* const v, void (* const callback)(int32_t r, void* uparam), void* const uparam)
+{
+  if(node_id > CANARD_NODE_ID_MAX || ch > 5 || v == NULL || callback == NULL) { return -EINVAL; }
+
+  struct vpe6090_read* t = malloc(sizeof(struct vpe6090_read));
+  t->input = v;
+  t->callback = callback;
+  t->uparam = uparam;
+
+  const char* name = NULL;
+  switch(ch)
+  {
+     case 0:
+      name = "ch1.input";
+      break;
+
+    case 1:
+      name = "ch2.input";
+      break;
+
+    case 2:
+      name = "ch3.input";
+      break;
+
+    case 3:
+      name = "ch4.input";
+      break;
+
+    case 4:
+      name = "ch5.input";
+      break;
+
+    case 5:
+      name = "ch6.input";
+      break;
+  }
+	int32_t r = wlmio_register_access(node_id, name, NULL, &t->reg, &vpe6090_read_callback, t);
+  if(r < 0)
+  {
+    free(t);
+    goto exit;
+  }
+
+  r = 0;
+	
+exit:
+	return r;
+}
+
+
+int32_t wlmio_vpe6090_configure(const uint8_t node_id, const uint8_t ch, uint8_t type, void (* const callback)(int32_t r, void* uparam), void* const uparam)
+{
+  if(node_id > CANARD_NODE_ID_MAX || ch > 5 || callback == NULL || type > WLMIO_VPE6090_TYPE_T)
+  { return -EINVAL; }
+
+  struct wlmio_register_access regw;
+
+	regw.type = WLMIO_REGISTER_VALUE_UINT8;
+	regw.length = 1;
+
+  const char* name = NULL;
+  switch(ch)
+  {
+    case 0:
+      name = "ch1.type";
+      break;
+
+    case 1:
+      name = "ch2.type";
+      break;
+
+    case 2:
+      name = "ch3.type";
+      break; 
+
+    case 3:
+      name = "ch4.type";
+      break;
+
+    case 4:
+      name = "ch5.type";
+      break;
+
+    case 5:
+      name = "ch6.type";
+      break;
+  }
+
+  memcpy(regw.value, &type, 1);
+
+	int32_t r = wlmio_register_access(node_id, name, &regw, NULL, callback, uparam);
+ 
+	return r;
+}
+

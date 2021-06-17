@@ -457,3 +457,37 @@ class VPE6080(Node):
   async def configure(self, sample_interval: int):
     await self.ch1._check_name()
     await self.node.register_access("sample_interval", RegisterType.UINT16, [sample_interval])
+
+
+class VPE6090Channel(IoChannel):
+  def __init__(self, node: Node, ch: int):
+    super().__init__(node, "com.widgetlords.mio.6090")
+    self.reg = "ch{}.input".format(ch)
+    self.type_reg = "ch{}.type".format(ch)
+
+  async def read(self):
+    await super().read()
+    r = await self.node.register_access(self.reg, RegisterType.EMPTY, None)
+    assert r[0] == RegisterType.UINT16
+    return r[1][0]
+
+  async def configure(self, t: int):
+    await super().configure()
+    await self.node.register_access(self.type_reg, RegisterType.UINT8, [t])
+
+
+__all__.append("VPE6090")
+class VPE6090(Node):
+  def __init__(self, id: int):
+    super().__init__(id)
+
+    self.ch1 = VPE6090Channel(self, 1)
+    self.ch2 = VPE6090Channel(self, 2)
+    self.ch3 = VPE6090Channel(self, 3)
+    self.ch4 = VPE6090Channel(self, 4)
+    self.ch5 = VPE6090Channel(self, 5)
+    self.ch6 = VPE6090Channel(self, 6)
+
+  async def configure(self):
+    await self.ch1._check_name()
+

@@ -228,6 +228,21 @@ int32_t wlmio_vpe6070_write(uint8_t node_id, uint8_t ch, uint16_t v, void (* cal
 int32_t wlmio_vpe6080_read(uint8_t node_id, uint8_t ch, uint16_t* v, void (* callback)(int32_t r, void* uparam), void* uparam);
 int32_t wlmio_vpe6080_configure(uint8_t node_id, uint8_t ch, uint8_t enabled, uint16_t beta, uint16_t t0, void (* callback)(int32_t r, void* uparam), void* uparam);
 
+enum wlmio_vpe6090
+{
+  WLMIO_VPE6090_TYPE_MV = 0,
+  WLMIO_VPE6090_TYPE_B = 1,
+  WLMIO_VPE6090_TYPE_E = 2,
+  WLMIO_VPE6090_TYPE_J = 3,
+  WLMIO_VPE6090_TYPE_K = 4,
+  WLMIO_VPE6090_TYPE_N = 5,
+  WLMIO_VPE6090_TYPE_R = 6,
+  WLMIO_VPE6090_TYPE_S = 7,
+  WLMIO_VPE6090_TYPE_T = 8
+};
+int32_t wlmio_vpe6090_read(uint8_t node_id, uint8_t ch, uint16_t* v, void (* callback)(int32_t r, void* uparam), void* uparam);
+int32_t wlmio_vpe6090_configure(uint8_t node_id, uint8_t ch, uint8_t type, void (* callback)(int32_t r, void* uparam), void* uparam);
+
 
 // synchronous/blocking wrapper functions
 
@@ -255,6 +270,8 @@ int32_t wlmio_vpe6060_configure_sync(uint8_t node_id, uint8_t ch, uint8_t mode, 
 int32_t wlmio_vpe6070_write_sync(uint8_t node_id, uint8_t ch, uint16_t v);
 int32_t wlmio_vpe6080_read_sync(uint8_t node_id, uint8_t ch, uint16_t* v);
 int32_t wlmio_vpe6080_configure_sync(uint8_t node_id, uint8_t ch, uint8_t enabled, uint16_t beta, uint16_t t0);
+int32_t wlmio_vpe6090_read_sync(uint8_t node_id, uint8_t ch, uint16_t* v);
+int32_t wlmio_vpe6090_configure_sync(uint8_t node_id, uint8_t ch, uint8_t type);
 
 #ifdef __cplusplus
 }
