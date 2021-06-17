@@ -1,5 +1,6 @@
 executable('6050cal', '6050cal.c', dependencies: [wlmio_dep], install: true)
 executable('6070cal', '6070cal.c', dependencies: [wlmio_dep], install: true)
+executable('6090cal', '6090cal.c', dependencies: [wlmio_dep], install: true)
 executable('factoryreset', 'factoryreset.c', dependencies: [wlmio_dep], install: true)
 executable('fwupdate', 'fwupdate.c', dependencies: [canard_dep, libgpiod_dep], install: true)
 executable('infodump', 'infodump.c', dependencies: [wlmio_dep], install: true)
