@@ -251,7 +251,7 @@ class VPE6010(Node):
 
   async def configure(self, sample_interval: int):
     await self.ch1._check_name()
-    await self.node.register_access("sample_interval", RegisterType.UINT16, [sample_interval])
+    await self.register_access("sample_interval", RegisterType.UINT16, [sample_interval])
 
 
 class VPE6030Channel(IoChannel):
@@ -312,7 +312,7 @@ class VPE6040(Node):
 
   async def configure(self, sample_interval: int):
     await self.ch1._check_name()
-    await self.node.register_access("sample_interval", RegisterType.UINT16, [sample_interval])
+    await self.register_access("sample_interval", RegisterType.UINT16, [sample_interval])
 
 
 class VPE6050Channel(IoChannel):
@@ -386,7 +386,7 @@ class VPE6060(Node):
 
   async def configure(self, sample_interval: int):
     await self.ch1._check_name()
-    await self.node.register_access("sample_interval", RegisterType.UINT16, [sample_interval])
+    await self.register_access("sample_interval", RegisterType.UINT16, [sample_interval])
 
 
 class VPE6070Channel(IoChannel):
@@ -456,7 +456,7 @@ class VPE6080(Node):
 
   async def configure(self, sample_interval: int):
     await self.ch1._check_name()
-    await self.node.register_access("sample_interval", RegisterType.UINT16, [sample_interval])
+    await self.register_access("sample_interval", RegisterType.UINT16, [sample_interval])
 
 
 class VPE6090Channel(IoChannel):
