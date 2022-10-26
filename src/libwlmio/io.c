@@ -64,7 +64,7 @@ int32_t wlmio_vpe6010_read(const uint8_t node_id, struct wlmio_vpe6010_input* co
   }
 
   r = 0;
-	
+
 exit:
 	return r;
 }
@@ -104,7 +104,7 @@ int32_t wlmio_vpe6030_write(const uint8_t node_id, const uint8_t ch, uint8_t v, 
   }
 
 	int32_t r = wlmio_register_access(node_id, name, &regw, NULL, callback, uparam);
-	
+
 	return r;
 }
 
@@ -177,7 +177,7 @@ int32_t wlmio_vpe6040_read(const uint8_t node_id, const uint8_t ch, uint16_t* co
   }
 
   r = 0;
-	
+
 exit:
 	return r;
 }
@@ -215,7 +215,7 @@ int32_t wlmio_vpe6040_configure(const uint8_t node_id, const uint8_t ch, const u
   }
 
 	int32_t r = wlmio_register_access(node_id, name, &regw, NULL, callback, uparam);
-	
+
 	return r;
 }
 
@@ -252,7 +252,7 @@ int32_t wlmio_vpe6050_write(const uint8_t node_id, const uint8_t ch, const uint1
   }
 
 	int32_t r = wlmio_register_access(node_id, name, &regw, NULL, callback, uparam);
-	
+
 	return r;
 }
 
@@ -289,7 +289,7 @@ int32_t wlmio_vpe6050_configure(const uint8_t node_id, const uint8_t ch, const u
   }
 
 	int32_t r = wlmio_register_access(node_id, name, &regw, NULL, callback, uparam);
-	
+
 	return r;
 }
 
@@ -362,7 +362,7 @@ int32_t wlmio_vpe6060_read(const uint8_t node_id, const uint8_t ch, uint32_t* co
   }
 
   r = 0;
-	
+
 exit:
 	return r;
 }
@@ -469,7 +469,7 @@ int32_t wlmio_vpe6060_configure(const uint8_t node_id, const uint8_t ch, const u
   }
 
   r = 0;
-	
+
 exit:
 	return r;
 }
@@ -507,7 +507,7 @@ int32_t wlmio_vpe6070_write(const uint8_t node_id, const uint8_t ch, const uint1
   }
 
 	int32_t r = wlmio_register_access(node_id, name, &regw, NULL, callback, uparam);
-	
+
 	return r;
 }
 
@@ -596,7 +596,7 @@ int32_t wlmio_vpe6080_read(const uint8_t node_id, const uint8_t ch, uint16_t* co
   }
 
   r = 0;
-	
+
 exit:
 	return r;
 }
@@ -730,7 +730,7 @@ int32_t wlmio_vpe6080_configure(const uint8_t node_id, const uint8_t ch, uint8_t
   }
 
   r = 0;
-	
+
 exit:
 	return r;
 }
@@ -768,7 +768,7 @@ static void node_set_sample_interval_callback(int32_t r, void* const p)
   }
 
   r = 0;
-  
+
 exit:
   t->callback(r, t->uparam);
   free(p);
@@ -797,7 +797,7 @@ int32_t wlmio_node_set_sample_interval(const uint8_t node_id, const uint16_t sam
   }
 
   r = 0;
-	
+
 exit:
 	return r;
 }
@@ -879,7 +879,7 @@ int32_t wlmio_vpe6090_read(const uint8_t node_id, const uint8_t ch, uint16_t* co
   }
 
   r = 0;
-	
+
 exit:
 	return r;
 }
@@ -908,7 +908,7 @@ int32_t wlmio_vpe6090_configure(const uint8_t node_id, const uint8_t ch, uint8_t
 
     case 2:
       name = "ch3.type";
-      break; 
+      break;
 
     case 3:
       name = "ch4.type";
@@ -926,7 +926,96 @@ int32_t wlmio_vpe6090_configure(const uint8_t node_id, const uint8_t ch, uint8_t
   memcpy(regw.value, &type, 1);
 
 	int32_t r = wlmio_register_access(node_id, name, &regw, NULL, callback, uparam);
- 
+
 	return r;
 }
 
+
+struct vpe6180_read
+{
+  struct wlmio_register_access reg;
+  uint16_t* input;
+  void (* callback)(int32_t r, void* uparam);
+  void* uparam;
+};
+
+
+static void vpe6180_read_callback(int32_t r, void* const p)
+{
+  struct vpe6180_read* const t = p;
+
+  if(r < 0)
+  { goto exit; }
+
+  if(t->reg.type != WLMIO_REGISTER_VALUE_UINT16 || t->reg.length < 1)
+  {
+    r = -EPROTO;
+    goto exit;
+  }
+
+  memcpy(t->input, t->reg.value, 2);
+
+  r = 0;
+
+exit:
+  t->callback(r, t->uparam);
+  free(p);
+}
+
+
+int32_t wlmio_vpe6180_read(const uint8_t node_id, const uint8_t ch, uint16_t* const v, void (* const callback)(int32_t r, void* uparam), void* const uparam)
+{
+  if (node_id > CANARD_NODE_ID_MAX || ch > 7 || v == NULL || callback == NULL)
+    return -EINVAL;
+
+  struct vpe6180_read* t = malloc(sizeof(struct vpe6180_read));
+  t->input = v;
+  t->callback = callback;
+  t->uparam = uparam;
+
+  const char* name = NULL;
+  switch (ch) {
+    case 0:
+      name = "ch1.input";
+      break;
+
+    case 1:
+      name = "ch2.input";
+      break;
+
+    case 2:
+      name = "ch3.input";
+      break;
+
+    case 3:
+      name = "ch4.input";
+      break;
+
+    case 4:
+      name = "ch5.input";
+      break;
+
+    case 5:
+      name = "ch6.input";
+      break;
+
+    case 6:
+      name = "ch7.input";
+      break;
+
+    case 7:
+      name = "ch8.input";
+      break;
+  }
+	int32_t r = wlmio_register_access(node_id, name, NULL, &t->reg, &vpe6180_read_callback, t);
+  if(r < 0)
+  {
+    free(t);
+    goto exit;
+  }
+
+  r = 0;
+
+exit:
+	return r;
+}

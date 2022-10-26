@@ -38,7 +38,7 @@ exit:
 
 
 int32_t wlmio_register_list_sync(const uint8_t node_id, const uint16_t index, char* const name)
-{	
+{
 	sync_flag = 0;
 
 	int32_t r = wlmio_register_list(node_id, index, name, &sync_callback, NULL);
@@ -59,7 +59,7 @@ exit:
 
 
 int32_t wlmio_register_access_sync(const uint8_t node_id, const char* const name, const struct wlmio_register_access* const regw, struct wlmio_register_access* const regr)
-{	
+{
 	sync_flag = 0;
 
 	int32_t r = wlmio_register_access(node_id, name, regw, regr, &sync_callback, NULL);
@@ -80,7 +80,7 @@ exit:
 
 
 int32_t wlmio_execute_command_sync(const uint8_t node_id, const uint16_t command, const void* const param, size_t param_len)
-{	
+{
 	sync_flag = 0;
 
 	int32_t r = wlmio_execute_command(node_id, command, param, param_len, &sync_callback, NULL);
@@ -393,3 +393,23 @@ exit:
   return r;
 }
 
+
+int32_t wlmio_vpe6180_read_sync(const uint8_t node_id, const uint8_t ch, uint16_t* const v)
+{
+  sync_flag = 0;
+
+  int32_t r = wlmio_vpe6180_read(node_id, ch, v, sync_callback, NULL);
+  if(r < 0)
+  { goto exit; }
+
+  while(!sync_flag)
+  {
+    wlmio_wait_for_event();
+    wlmio_tick();
+  }
+
+  r = sync_return;
+
+exit:
+  return r;
+}
