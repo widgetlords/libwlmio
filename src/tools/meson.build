@@ -6,3 +6,4 @@ executable('fwupdate', 'fwupdate.c', dependencies: [canard_dep, libgpiod_dep], i
 executable('infodump', 'infodump.c', dependencies: [wlmio_dep], install: true)
 executable('monitor', 'monitor.c', dependencies: [wlmio_dep], install: true)
 executable('regtool', 'regtool.c', dependencies: [wlmio_dep], install: true)
+executable('store', 'store.c', dependencies: [wlmio_dep], install: true)
