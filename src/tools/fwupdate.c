@@ -154,21 +154,21 @@ int main(int argc, char** argv)
     return -1;
   }
 
-  // 128K buffer
-  uint8_t* const data = malloc(0x20000U);
+  // 256K buffer
+  uint8_t* const data = malloc(0x40000U);
   if(data == NULL)
   {
-    fprintf(stderr, "Could not allocate 128K of memory\n");
+    fprintf(stderr, "Could not allocate 256K of memory\n");
     return -1;
   }
 
-  int r = read(f, data, 0x20000U);
+  int r = read(f, data, 0x40000U);
   if(r <= 0)
   {
     fprintf(stderr, "Unable to read file %s\n", argv[2]);
     return -1;
   }
-  else if(r > 0x18000U)
+  else if(r > 0x38000U)
   {
     fprintf(stderr, "File is too large\n");
     return -1;
@@ -201,7 +201,7 @@ int main(int argc, char** argv)
 		&canard,
 		CanardTransferKindRequest,
 		408,
-		118,
+		261,
 		CANARD_DEFAULT_TRANSFER_ID_TIMEOUT_USEC,
 		&file_read_subscription
 	);
@@ -249,7 +249,7 @@ int main(int argc, char** argv)
       bytes = data_len - offset;
       bytes = bytes > 256 ? 256 : bytes;
     }
-    // printf("%u\n", bytes);
+    printf("%u\n", bytes);
     memcpy((void*)tfr.payload + 2, &bytes, 2);
     memcpy((void*)tfr.payload + 4, data + offset, bytes);
 
