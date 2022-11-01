@@ -1,3 +1,4 @@
+executable('6040macal', '6040macal.c', dependencies: [wlmio_dep], install: true)
 executable('6050cal', '6050cal.c', dependencies: [wlmio_dep], install: true)
 executable('6070cal', '6070cal.c', dependencies: [wlmio_dep], install: true)
 executable('6090cal', '6090cal.c', dependencies: [wlmio_dep], install: true)
