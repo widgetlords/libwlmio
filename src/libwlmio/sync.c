@@ -413,3 +413,45 @@ int32_t wlmio_vpe6180_read_sync(const uint8_t node_id, const uint8_t ch, uint16_
 exit:
   return r;
 }
+
+
+int32_t wlmio_vpe6190_configure_sync(const uint8_t node_id, const uint8_t ch, uint8_t enable)
+{
+  sync_flag = 0;
+
+  int32_t r = wlmio_vpe6190_configure(node_id, ch, enable, sync_callback, NULL);
+  if(r < 0)
+  { goto exit; }
+
+  while(!sync_flag)
+  {
+    wlmio_wait_for_event();
+    wlmio_tick();
+  }
+
+  r = sync_return;
+
+exit:
+  return r;
+}
+
+
+int32_t wlmio_vpe6190_read_sync(const uint8_t node_id, const uint8_t ch, uint32_t* const v)
+{
+  sync_flag = 0;
+
+  int32_t r = wlmio_vpe6190_read(node_id, ch, v, sync_callback, NULL);
+  if(r < 0)
+  { goto exit; }
+
+  while(!sync_flag)
+  {
+    wlmio_wait_for_event();
+    wlmio_tick();
+  }
+
+  r = sync_return;
+
+exit:
+  return r;
+}

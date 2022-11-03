@@ -245,6 +245,9 @@ int32_t wlmio_vpe6090_configure(uint8_t node_id, uint8_t ch, uint8_t type, void 
 
 int32_t wlmio_vpe6180_read(uint8_t node_id, uint8_t ch, uint16_t* v, void (* callback)(int32_t r, void* uparam), void* uparam);
 
+int32_t wlmio_vpe6190_configure(uint8_t node_id, uint8_t ch, uint8_t enable, void (* callback)(int32_t r, void* uparam), void* uparam);
+int32_t wlmio_vpe6190_read(uint8_t node_id, uint8_t ch, uint32_t* v, void (* callback)(int32_t r, void* uparam), void* uparam);
+
 // synchronous/blocking wrapper functions
 
 /**
@@ -274,6 +277,8 @@ int32_t wlmio_vpe6080_configure_sync(uint8_t node_id, uint8_t ch, uint8_t enable
 int32_t wlmio_vpe6090_read_sync(uint8_t node_id, uint8_t ch, uint16_t* v);
 int32_t wlmio_vpe6090_configure_sync(uint8_t node_id, uint8_t ch, uint8_t type);
 int32_t wlmio_vpe6180_read_sync(uint8_t node_id, uint8_t ch, uint16_t* v);
+int32_t wlmio_vpe6190_configure_sync(uint8_t node_id, uint8_t ch, uint8_t enable);
+int32_t wlmio_vpe6190_read_sync(uint8_t node_id, uint8_t ch, uint32_t* v);
 
 #ifdef __cplusplus
 }

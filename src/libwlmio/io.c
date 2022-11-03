@@ -1019,3 +1019,107 @@ int32_t wlmio_vpe6180_read(const uint8_t node_id, const uint8_t ch, uint16_t* co
 exit:
 	return r;
 }
+
+
+int32_t wlmio_vpe6190_configure(const uint8_t node_id, const uint8_t ch, uint8_t enable, void (* const callback)(int32_t r, void* uparam), void* const uparam)
+{
+  if (node_id > CANARD_NODE_ID_MAX || ch > 3 || callback == NULL)
+    return -EINVAL;
+
+  enable = enable ? 1 : 0;
+
+  struct wlmio_register_access regw;
+
+	regw.type = WLMIO_REGISTER_VALUE_UINT8;
+	regw.length = 1;
+
+  const char* name = NULL;
+  switch (ch) {
+  case 0:
+    name = "ch1.enabled";
+    break;
+
+  case 1:
+    name = "ch2.enabled";
+    break;
+
+  case 2:
+    name = "ch3.enabled";
+    break;
+  }
+
+  memcpy(regw.value, &enable, 1);
+
+	int32_t r = wlmio_register_access(node_id, name, &regw, NULL, callback, uparam);
+
+	return r;
+}
+
+
+struct vpe6190_read
+{
+  struct wlmio_register_access reg;
+  uint32_t* input;
+  void (* callback)(int32_t r, void* uparam);
+  void* uparam;
+};
+
+
+static void vpe6190_read_callback(int32_t r, void* const p)
+{
+  struct vpe6190_read* const t = p;
+
+  if(r < 0)
+  { goto exit; }
+
+  if (t->reg.type != WLMIO_REGISTER_VALUE_UINT32 || t->reg.length < 1) {
+    r = -EPROTO;
+    goto exit;
+  }
+
+  memcpy(t->input, t->reg.value, sizeof(*t->input));
+
+  r = 0;
+
+exit:
+  t->callback(r, t->uparam);
+  free(p);
+}
+
+
+int32_t wlmio_vpe6190_read(const uint8_t node_id, const uint8_t ch, uint32_t* const v, void (* const callback)(int32_t r, void* uparam), void* const uparam)
+{
+  if (node_id > CANARD_NODE_ID_MAX || ch > 3 || v == NULL || callback == NULL)
+    return -EINVAL;
+
+  struct vpe6190_read* t = malloc(sizeof(struct vpe6190_read));
+  t->input = v;
+  t->callback = callback;
+  t->uparam = uparam;
+
+  const char* name = NULL;
+  switch (ch) {
+    case 0:
+      name = "ch1.input";
+      break;
+
+    case 1:
+      name = "ch2.input";
+      break;
+
+    case 2:
+      name = "ch3.input";
+      break;
+  }
+	int32_t r = wlmio_register_access(node_id, name, NULL, &t->reg, &vpe6190_read_callback, t);
+  if(r < 0)
+  {
+    free(t);
+    goto exit;
+  }
+
+  r = 0;
+
+exit:
+	return r;
+}
