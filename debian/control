@@ -1,8 +1,10 @@
+Source: libwlmio
+Maintainer: Kelsey Maes <kelsey@vpprocess.com>
+Section: utils
+
 Package: libwlmio
-Version: 1.2.0-1
-Section: base
 Priority: optional
 Architecture: any
 Depends: python3
-Maintainer: Kelsey Maes <kelsey@vpprocess.com>
 Description: Support for the Widgetlord WL-MIO system
+ Includes supporting tools.

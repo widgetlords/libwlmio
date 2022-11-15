@@ -1,2 +1,3 @@
+#!/bin/sh
 mkdir -p /usr/share/rpikernelhack/overlays/
 dpkg-divert --no-rename --package rpikernelhack --divert /usr/share/rpikernelhack/overlays/wlmio.dtbo /boot/overlays/wlmio.dtbo
