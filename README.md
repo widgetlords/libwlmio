@@ -15,6 +15,6 @@ A C and Python library for use with the Widgetlords [WL-MIO](https://wlmio.com/)
 ## Package for Raspberry Pi
 
 ```
-apt install devscripts meson libgpiod-dev
+apt install devscripts meson libgpiod-dev python3-dev
 debuild -b -us -uc -i
 ```
