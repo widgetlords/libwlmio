@@ -468,7 +468,7 @@ class VPE6090Channel(IoChannel):
   async def read(self):
     await super().read()
     r = await self.node.register_access(self.reg, RegisterType.EMPTY, None)
-    assert r[0] == RegisterType.UINT16
+    assert r[0] == RegisterType.UINT32
     return r[1][0]
 
   async def configure(self, t: int):
