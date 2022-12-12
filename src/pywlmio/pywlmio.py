@@ -31,8 +31,8 @@ def unregister_status_callback(id: int, callback: Callable) -> None:
 __all__.append("unregister_status_callback")
 
 def status_callback(node_id: int, old_status: bytes, new_status: bytes) -> None:
-  old_status = Status._make(unpack("IBBB0L", old_status))
-  new_status = Status._make(unpack("IBBB0L", new_status))
+  old_status = Status._make(unpack("IBBB0Q", old_status))
+  new_status = Status._make(unpack("IBBB0Q", new_status))
 
   for callback in status_callbacks[node_id]:
     asyncio.create_task(callback(old_status, new_status))
@@ -127,7 +127,7 @@ class Node:
         if r[0] < 0:
           raise WlmioInternalError(-r[0])
 
-        s = Struct("6BQ16s51sQ222s0L")
+        s = Struct("6B0IQ16s51sQ222s0L")
         temp = s.unpack(r[1][0:s.size])
 
         pv = Version._make(temp[0:2])
@@ -165,7 +165,7 @@ class Node:
       reg_type = RegisterType.EMPTY
     elif reg_type == RegisterType.UINT32:
       length = len(value)
-      data = pack("{0}L".format(length), *value)
+      data = pack("{0}I".format(length), *value)
     elif reg_type == RegisterType.UINT16:
       length = len(value)
       data = pack("{0}H".format(length), *value)
@@ -180,7 +180,7 @@ class Node:
     regr = s.unpack(regr[1])
 
     if regr[0] == RegisterType.UINT32:
-      regr = (regr[0], unpack("{0}L".format(regr[1]), regr[2][0:regr[1]*4]))
+      regr = (regr[0], unpack("{0}I".format(regr[1]), regr[2][0:regr[1]*4]))
     if regr[0] == RegisterType.UINT16:
       regr = (regr[0], unpack("{0}H".format(regr[1]), regr[2][0:regr[1]*2]))
     if regr[0] == RegisterType.UINT8:
