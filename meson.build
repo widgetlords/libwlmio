@@ -1,4 +1,4 @@
-project('libwlmio', 'c', default_options: ['c_std=gnu11', 'b_lto=true', 'optimization=2'], license: 'MIT', version: '1.2.1')
+project('libwlmio', 'c', default_options: ['c_std=gnu11', 'b_lto=true', 'optimization=2'], license: 'MIT', version: '1.2.2')
 add_project_arguments('-Werror=return-type', language: ['c'])
 
 pkg = import('pkgconfig')
