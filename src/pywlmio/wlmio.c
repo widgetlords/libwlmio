@@ -204,14 +204,13 @@ static void register_access_callback(const int32_t r, void* const p)
   if(r < 0)
   {
     value = Py_None;
-    Py_INCREF(value);
   }
   else
   {
     value = Py_BuildValue("y#", &param->regr, sizeof(struct wlmio_register_access));
   }
 
-  PyObject* result = Py_BuildValue("(i,O)", r, value);
+  PyObject* result = Py_BuildValue("(i,N)", r, value);
   call_soon(param->future, result);
   Py_DECREF(result);
 
@@ -233,15 +232,8 @@ static PyObject* register_access(PyObject* const self, PyObject* const args)
   int32_t r = PyArg_ParseTuple(args, "Bsy#O", &node_id, &name, &regw, &regw_len, &future);
   if(r == 0)
   {
-    // result = Py_None;
-    // Py_INCREF(result);
     goto exit;
   }
-  // if(!PyCallable_Check(callback))
-  // {
-  //   PyErr_SetString(PyExc_TypeError, "Argument must be callable");
-  //   goto exit;
-  // }
 
   struct register_access_param* const param = malloc(sizeof(struct register_access_param));
   param->future = future;
@@ -253,7 +245,6 @@ static PyObject* register_access(PyObject* const self, PyObject* const args)
     goto exit;
   }
 
-  Py_INCREF(future);
   Py_INCREF(future);
   result = future;
 
