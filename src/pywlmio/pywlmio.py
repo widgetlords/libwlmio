@@ -30,15 +30,20 @@ def unregister_status_callback(id: int, callback: Callable) -> None:
     status_callbacks[id].discard(callback)
 __all__.append("unregister_status_callback")
 
+background_tasks = set()
 def status_callback(node_id: int, old_status: bytes, new_status: bytes) -> None:
   old_status = Status._make(unpack("IBBB0Q", old_status))
   new_status = Status._make(unpack("IBBB0Q", new_status))
 
   for callback in status_callbacks[node_id]:
-    asyncio.create_task(callback(old_status, new_status))
+    task = asyncio.create_task(callback(old_status, new_status))
+    background_tasks.add(task)
+    task.add_done_callback(background_tasks.discard)
 
   for callback in status_callbacks[128]:
-    asyncio.create_task(callback(node_id, old_status, new_status))
+    task = asyncio.create_task(callback(node_id, old_status, new_status))
+    background_tasks.add(task)
+    task.add_done_callback(background_tasks.discard)
 
 set_status_callback(status_callback)
 
