@@ -1,3 +1,4 @@
 #!/bin/sh
 mkdir -p /usr/share/rpikernelhack/overlays/
-dpkg-divert --no-rename --package rpikernelhack --divert /usr/share/rpikernelhack/overlays/wlmio.dtbo /boot/overlays/wlmio.dtbo
+dpkg-divert --no-rename --package rpikernelhack --divert /usr/share/rpikernelhack/overlays/wlmio.dtbo /boot/firmware/overlays/wlmio.dtbo
+dpkg-divert --no-rename --package rpikernelhack --divert /usr/share/rpikernelhack/overlays/wlmio-pi5.dtbo /boot/firmware/overlays/wlmio-pi5.dtbo
