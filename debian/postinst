@@ -1,3 +1,4 @@
 #!/bin/sh
-cp /usr/share/rpikernelhack/overlays/wlmio.dtbo /boot/overlays/
+cp /usr/share/rpikernelhack/overlays/wlmio.dtbo /boot/firmware/overlays/
+cp /usr/share/rpikernelhack/overlays/wlmio-pi5.dtbo /boot/firmware/overlays/
 rm -rf /usr/share/rpikernelhack/
