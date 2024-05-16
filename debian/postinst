@@ -1,3 +1,10 @@
 #!/bin/sh
-cp /usr/share/rpikernelhack/overlays/wlmio.dtbo /boot/overlays/
-rm -rf /usr/share/rpikernelhack/
+set -e
+
+if [ -d /boot/firmware ]; then
+	BOOT_PATH=/boot/firmware
+else
+	BOOT_PATH=/boot
+fi
+
+cp /usr/share/libwlmio/wlmio.dtbo $BOOT_PATH/overlays/

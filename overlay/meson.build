@@ -6,8 +6,6 @@ overlay = custom_target('wlmio.dtbo',
 	command: [ dtc, '-@', '-I', 'dts', '-O', 'dtb', '-o', '@OUTPUT@', '@INPUT@' ],
 	build_by_default: true,
 	install: true,
-	install_dir: '/boot/overlays/',
-	# install_dir: '/usr/share/rpikernelhack/overlays/',
-	install_mode: ['rwxr-xr-x', 'root', 'root']
-	# install_mode: 'rwxr-xr-x'
+	install_dir: '/usr/share/libwlmio/',
+	install_mode: ['rw-r--r--', 'root', 'root']
 )
