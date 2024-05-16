@@ -12,3 +12,5 @@ subdir('src/pywlmio')
 subdir('src/tools')
 
 subdir('overlay')
+
+install_data('50-wlmio.network', install_dir: get_option('prefix') / 'lib/systemd/network')

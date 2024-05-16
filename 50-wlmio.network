@@ -1,0 +1,16 @@
+[Match]
+Name=can0
+
+[CAN]
+BitRate=500K
+SamplePoint=80%
+
+FDMode=True
+DataBitRate=2000K
+DataSamplePoint=80%
+
+RestartSec=100ms
+BusErrorReporting=True
+
+[Link]
+ActivationPolicy=up
