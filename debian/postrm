@@ -8,5 +8,5 @@ else
 fi
 
 if [ "$1" = remove ] || [ "$1" = abort-install ] || [ "$1" = disappear ]; then
-  rm $BOOT_PATH/overlays/wlmio.dtbo
+  rm $BOOT_PATH/wlmio.txt
 fi

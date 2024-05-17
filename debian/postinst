@@ -7,4 +7,4 @@ else
 	BOOT_PATH=/boot
 fi
 
-cp /usr/share/libwlmio/wlmio.dtbo $BOOT_PATH/overlays/
+cp /usr/share/libwlmio/wlmio.txt $BOOT_PATH/wlmio.txt

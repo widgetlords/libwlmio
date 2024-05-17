@@ -1,0 +1,15 @@
+[all]
+
+dtoverlay=i2c-rtc,mcp7940x
+
+dtoverlay=mcp251xfd,spi0-0,interrupt=6,rx_interrupt=16
+
+[pi4]
+dtoverlay=uart3
+dtoverlay=uart5
+
+[pi5]
+dtoverlay=uart2
+dtoverlay=uart4
+
+[all]
