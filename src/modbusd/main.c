@@ -23,9 +23,9 @@ struct gpiod_chip* chip;
 struct gpiod_line* line;
 
 
-void driver_init(unsigned int driver)
+void driver_init(const char* chipn, unsigned int driver)
 {
-  chip = gpiod_chip_open_by_name("gpiochip0");
+  chip = gpiod_chip_open_by_name(chipn);
   if(chip == NULL)
   {
     fprintf(stderr, "Unable to open GPIO chip\n");
@@ -203,6 +203,7 @@ static struct argp_option options[] = {
   {"stty", 's', "FILE", 0, "Specify serial TTY" },
   {"vtty", 'v', "FILE", 0, "Specify virtual TTY" },
   {"driver", 'd', "GPIO", 0, "GPIO pin used for transmit enable" },
+  {"chip", 'c', "CHIP", 0, "GPIO chip used for transmit enable" },
   { 0 }
 };
 
@@ -212,6 +213,7 @@ struct arguments
   const char* stty;
   const char* vtty;
   unsigned int driver;
+  const char* chip;
 };
 
 /* Parse a single option. */
@@ -240,6 +242,10 @@ static error_t parse_opt(int key, char* arg, struct argp_state* state)
       arguments->driver = value;
       break;
 
+    case 'c':
+      arguments->chip = arg;
+      break;
+
     default:
       return ARGP_ERR_UNKNOWN;
   }
@@ -253,7 +259,8 @@ struct arguments arguments =
 {
   .stty = "/dev/ttyAMA1",
   .vtty = "/tmp/modbus",
-  .driver = 18U
+  .driver = 18U,
+  .chip = "gpiochip0"
 };
 
 int uart = -1;
@@ -280,7 +287,7 @@ int main(const int argc, char** const argv)
 
   atexit(&cleanup);
 
-  driver_init(arguments.driver);
+  driver_init(arguments.chip, arguments.driver);
 
   uart = open(arguments.stty, O_RDWR | O_NOCTTY);
   if(uart < 0)
