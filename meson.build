@@ -7,7 +7,6 @@ libgpiod_dep = dependency('libgpiod', static: true, version: '<2', fallback: 'li
 
 subdir('src/libcanard')
 subdir('src/libwlmio')
-subdir('src/modbusd')
 subdir('src/pywlmio')
 subdir('src/tools')
 
