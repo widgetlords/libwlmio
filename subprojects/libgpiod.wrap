@@ -1,0 +1,7 @@
+[wrap-file]
+directory = libgpiod-1.6.5
+source_url = https://mirrors.edge.kernel.org/pub/software/libs/libgpiod/libgpiod-1.6.5.tar.gz
+source_filename = libgpiod-1.6.5.tar.gz
+source_hash = 0ff70878f5a8fb0f6a8e2690e3190cbfc99ad8b6f39e0d2c2cb82e42842dd33b
+
+patch_directory = libgpiod

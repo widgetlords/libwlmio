@@ -3,7 +3,7 @@ add_project_arguments('-Werror=return-type', language: ['c'])
 
 pkg = import('pkgconfig')
 
-libgpiod_dep = dependency('libgpiod', static: true)
+libgpiod_dep = dependency('libgpiod', static: true, version: '<2', fallback: 'libgpiod')
 
 subdir('src/libcanard')
 subdir('src/libwlmio')
